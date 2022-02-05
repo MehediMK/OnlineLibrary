@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}
+    Login Page
+{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mt-4 offset-3">
+            <h1 class="text-center">SignUp Form</h1>
+            <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+                <label class="form-group" for="username">Username</label>
+                    <input type="text" class="form-control" name="username" id="username">
+                
+                <label class="form-group" for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                <br>
+                <input type="submit" class="btn btn-success" value="Login">
+            </form>
+        </div>
+        
+
+    </div>
+</div>
+
+{% endblock content %}

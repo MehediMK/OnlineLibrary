@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load cart_in %}
+
+{% block title %}
+Cart Page
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+
+  <div class="border rounded p-4 m-3">
+    <h1 class='text-center'>Cart List</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sno.</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+    {% for book in books %}
+        <tr>          
+          <td>{{ forloop.counter }}</td>
+          <td>
+            <a href="{% url 'details' book.id %}">
+            <img src="{{ book.book_photo.url }}" width="100px" height="100px" alt="">
+          </a>
+          </td>
+          <td>{{ book.book_name}}</td>
+          <td>{{ book.category}}</td>
+          <td>{{ book.price|currency }}</td>
+          <td>
+            <form action="{% url 'incdec' %}" class="col-3 p-0 btn btn-success" method="post">
+              {% csrf_token %}
+              <input type="text" hidden name="productid" value="{{book.id}}" id="">
+              <input type="text" hidden name="remove" value="True" id="">
+              <input type="submit" class='m-0 btn btn-success ' value="-">
+          </form>
+            {{ book|cart_quantity:request.session.cart}}
+            <form action="{% url 'incdec' %}" class="col-3 p-0 btn btn-success" method="post">
+              {% csrf_token %}
+              <input type="text" hidden name="productid" value="{{book.id}}" id="">
+              <input type="submit" class='btn btn-success' value="+">
+          </form>
+          </td>
+          <td>{{ book|price_total:request.session.cart|currency  }}</td>
+        </tr>
+    {% endfor %}
+        
+      </tbody>
+      <tfoot>
+        <tr>
+          <td  colspan="5"></td>
+          <td>Total</td>        
+          <td>= {{ books|total_cart_price:request.session.cart|currency }}</td>
+        </tr>
+      </tfoot>
+    </table>
+    {% if request.user.is_authenticated %}
+    <div class="p-3 m-3">
+      {% if request.session.cart %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Check Out
+          </button>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="p-3 m-3">
+      <a href="{% url 'login' %}"  class="btn btn-info float-right btn btn-primary">Login</a>
+    </div>
+  {% endif %}
+   
+  </div>
+   
+</div>
+
+
+<!-- Button trigger modal -->
+{% if request.user.is_authenticated %}
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="p-1 m-1">
+                <div class="payment">
+                  <p class="text-center">*Make your payment in this number through any bKash Customer Wallet <br><small><a href="#paymentinst">payment instruction</a></small></p>
+                  <hr>
+                  <h4 class="text-center">Amount of Taka = {{ books|total_cart_price:request.session.cart|currency }}</h4>
+                  <hr>
+                  <h4 class="text-center text-success"><small class="text-danger">Merchant bKash No:</small> 01879205233</h4><hr>
+                </div>
+                <form action="{% url 'checkout' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="bkashtrxid">Enter bKash TrxID:<span class="text-danger">*</span> </label>
+                  <input type="text" name="bkashtrxid" id="bkashtrxid" class="form-control" placeholder="bKash TrxID:" required>
+                </div>
+                <div class="form-group">
+                  <label for="address">Address:<span class="text-danger">*</span></label>
+                  <input type="text" name="address" id="address" class="form-control" placeholder="# 193,east-kazipara,mirpur-10,Dhaka" required>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Phone No:<span class="text-danger">*</span></label>
+                  <input type="text" name="phone" id="phone" class="form-control" placeholder="018******" required>
+                </div>
+                  <input type="submit" class="btn btn-info float-right" value="Check Out">
+                </form>
+                <div class="paymentinst" id="paymentinst">
+                  <hr><br><br>
+                  <h5 class="text-waring">***How to Make Payment with bKash:</h5><hr>
+                  <ol>
+                    <li>Go to your bkash Mobile Menu by dialing *247#</li>
+                    <li>Choose "Payment"</li>
+                    <li>Enter the Merchant bKash Wallet No: 01879205233</li>
+                    <li>Enter the Amount: {{ books|total_cart_price:request.session.cart|currency }}</li>
+                    <li>Enter Reference: 33{{ request.user.username }}</li>
+                    <li>Enter the Counter Number: 123</li>
+                    <li>Now enter your bkash Menu PIN to Confirm</li>
+                    <li>Done! you will receive a confirmation message from bKash</li>
+                    <li>Put the Transaction ID in the Upper box and press "Checkout"</li>
+                  </ol>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal -->
+
+{% endif %}
+
+<!-- end model -->
+
+{% endblock %}

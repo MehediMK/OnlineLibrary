@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load cart_in %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 p-3">
+            <img class="card-img" src="{{ book.book_photo.url }}" alt="">
+        </div>
+        <div class="col-md-8 p-3">
+            <h4>Book Name: {{book.book_name}}</h4>
+            <h5 class="">Category: {{book.category}}</h5>
+            <h5 class="">Author: {{book.author}}</h5>
+            <h5 class="">Page Number: {{book.page_no}}</h5>
+            <h5 class="">Price: {{book.price | currency}}</h5>
+            {% if request.user.is_authenticated %}
+            <div class="col-md-3">
+                {% if book|is_in_cart:request.session.cart %}
+                    <div class="row">
+                                <input hidden type="text" name="product" value="{{book.id}}">
+                        <form action="{% url 'addtocart' %}" class="col-3 " method="post"> {% csrf_token %}
+                            <input hidden type="text" name="product" value="{{book.id}}">
+                            <input hidden type="text" name="remove" value="True">
+                            <input class="btn btn-secondary" type="submit" value=" - ">
+                        </form>
+
+                        <div class="col text-center">{{book|cart_quantity:request.session.cart}}</div>
+                        
+                        <form action="{% url 'addtocart' %}" class="col-3 " method="post"> {% csrf_token %}
+                            <input hidden type="text" name="product" value="{{book.id}}">
+                            <input class="btn btn-secondary" type="submit" value=" + ">
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="row">
+                        <div class="col">
+                            <form class="form-group" action="{% url 'addtocart' %}" method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name="product" value="{{book.id}}">
+                                <input class="btn btn-sm btn-warning w-100" type="submit" value="Add to cart">
+                            </form> 
+                        </div>
+                    </div>
+                    {% endif %}
+            </div>
+            {% endif %} 
+        </div>
+    </div>
+    <h4>Description</h4><hr>
+    <div class="row m-4">
+        <p class="">{{book.description|safe }}</p>
+    </div>
+</div>
+{% endblock content %}

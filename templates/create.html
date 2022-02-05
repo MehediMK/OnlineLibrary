@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row m-3">
+<h1 class="text-center">Create {{ pack }}</h1>
+        <div class="border offset-3 col-md-6 border-success">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" class="btn btn-success m-3 w-100 mx-auto" value="SignUp">
+            
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

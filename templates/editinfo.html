@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Edit info
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row m-3">
+<h1 class="text-center">Edit info Page</h1>
+        <div class="border offset-3 col-md-6 border-success">
+            <form method="post" action="{% url 'edituserinfo' %}" class="m-3" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                {{ form1|crispy }}
+                <input type="submit" class="btn btn-success m-3 w-100 mx-auto" value="Edit Now">
+            
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

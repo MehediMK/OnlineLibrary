@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-3">
+        <h1 class='text-center'>User Profile</h1>
+        <hr>
+        <div class="col-md-3 mx-auto border p-2">
+            {% if profile.profile_pic %}
+            <img class='d-block mx-auto img-thumbnail' src="{{ profile.profile_pic.url }}" alt="">
+            {% else %}
+            <img class='d-block mx-auto img-thumbnail' src="{% static 'image/demoprofile.png' %}" alt="">
+            {% endif %}
+            <p>Name: {{ user.first_name}} {{ user.last_name }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Gender: {{profile.get_gender_display}}</p>
+            <p>Address: {{profile.address}}</p>
+            <p>Phone No: {{profile.phone}}</p>
+            <a href="{% url 'edituserinfo' %}" class="btn btn-success w-100">Edit</a>
+            <a href="{% url 'changepass' %}" class="btn btn-warning w-100">Change password</a>
+        </div>
+        <div class="col-md-8">
+            <h4 class="text-center">User Details</h4>
+            <div class="row">
+                <!-- for package details -->
+                <table class="table m-2 table-dark table-striped table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th colspan="6" class=" bg-success">Book Package List</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Package Name</th>
+                            <th scope="col">Max Book</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Issue Date</th>
+                            <th scope="col">End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for book_pack in read_pack %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{book_pack.book_pack.pack_name}}</td>
+                            <td>{{book_pack.book_pack.max_book}}</td>
+                            <td>{{book_pack.book_pack.price}} TK</td>
+                            <td>{{book_pack.issu_date | date:"d-m-Y"}}</td>
+                            <td>{{book_pack.end_date | date:"d-m-Y"}}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="table-primary text-danger">
+                        <td colspan="2" class="pr-0">Total book =</td>
+                        <td>{{total_book}}</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+                {% comment %} book list {% endcomment %}
+                <table class="table m-2 table-dark table-striped table-hover">
+                
+                    <thead>
+                        <tr class="text-center">
+                            <th colspan="6" class=" bg-success">BOOk List</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Book Name</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for book_list in read_book_list %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{book_list.book_list.book_name}}</td>
+                            <td>{{book_list.date}}</td>
+                            <td><a href="{{ book_list.book_list.book_pdf.url }}" target="_blank" class=" btn btn-sm btn-info my-0 w-100">Read</a></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2" class="text-end text-warning">You can take max =</td>
+                        <td class="text-warning">{{max_book}} Books</td>
+                        <td class="text-warning"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock content %}

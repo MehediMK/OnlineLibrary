@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load cart_in %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+    <div class="row mt-3">
+        <!-- category start -->
+        <div class="col-md-2">            
+            <div class="list-group">
+                <a href="{% url 'shop' %}" class="list-group-item list-group-item-action active">All Product</a>
+                {% for category in categories %}
+                    <a href="{% url 'shop' %}?category={{category.id}}" class="list-group-item list-group-item-action">{{category.name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- category end -->
+        <!-- product list -->
+        <div class="col-md-10">
+            <div class="row">
+                {% if books %}
+                    {% for book in books %}
+                    <div class="card col-md-3 m-1">
+                        <div class="card-header">
+                            <img class="card-img" style="width:250px;height: 150px;" src="{{ book.book_photo.url }}" alt="">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'details' book.id%}" target="_blank">{{ book.book_name }}</a></h5>
+                            <p class="card-text">{{ book.short_desc }}</p>
+                            
+                            <!-- buttons -->
+                            
+                            <div class="card-footer p-1" id="book{{ book.id }}">
+                                {% if book|is_in_cart:request.session.cart %}
+                                <div class="row">
+                                            <input hidden type="text" name="product" value="{{book.id}}">
+                                    <form action="{% url 'shop' %}#book{{book.id}}" class="col-3 " method="post"> {% csrf_token %}
+                                        <input hidden type="text" name="product" value="{{book.id}}">
+                                        <input hidden type="text" name="remove" value="True">
+                                        <input class="btn btn-secondary" type="submit" value=" - ">
+                                    </form>
+
+                                    <div class="col text-center">{{book|cart_quantity:request.session.cart}}</div>
+                                    
+                                    <form action="{% url 'shop' %}#book{{book.id}}" class="col-3 " method="post"> {% csrf_token %}
+                                        <input hidden type="text" name="product" value="{{book.id}}">
+                                        <input class="btn btn-secondary" type="submit" value=" + ">
+                                    </form>
+                                </div>
+                                {% else %}
+                                <div class="row">
+                                    <div class="col">
+                                        <form class="form-group" action="{% url 'shop' %}#book{{book.id}}" method="post">
+                                            {% csrf_token %}
+                                            <input hidden type="text" name="product" value="{{book.id}}">
+                                            <input class="btn btn-sm btn-warning w-100" type="submit" value="Add to cart">
+                                        </form> 
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <br>
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="{% url 'takebook' book.id%}" class="btn btn-sm btn-success w-100">Online Read</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col text-center text-danger"><h3>Books not found...</h3></div>
+                {% endif %}
+
+                <!-- paginator -->
+              <div class="container"><br>
+                {% if books.has_other_pages %}
+                <ul class="pagination justify-content-center ">
+                  {% if books.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?productview={{ books.previous_page_number }}">Previous</a></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link disabled" href="javascript:void(0);">Previous</a></li>
+                  {% endif %}
+                  {% for i in books.paginator.page_range %}
+                  {% if books.number == i %}
+                  <li class="page-item"><a class="page-link active bg-danger text-light" href="javascript:void(0);">{{ i }}</a></li>
+                  {% else %}
+                  <li class="page-item"><a class="page-link" href="?productview={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                  {% endfor %}
+                  {% if books.has_next %}
+                  <li class="page-item"><a class="page-link" href="?productview={{ books.next_page_number }}">Next</a></li>
+                  {% else %}
+                  <li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+                  {% endif %}
+                </ul>
+                {% endif %}<br>
+              </div>
+            <!-- end paginator -->
+            </div>
+        </div>
+        <!-- product list end -->
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+<h1 class='text-center'>Book Package Page</h1> <hr>
+<div class="row">
+    {% for pack in book_pack %}    
+        <div class="card col-md-5 m-2 ">
+            <div class="card-header text-center">
+                <h1>{{pack.pack_name}}</h1>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Books : {{pack.max_book}}</p>
+                <p class="card-text">Price : {{pack.price }} TK</p>
+                <p class="card-text">Day : 30</p>
+            
+                <form action="{% url 'mypack' %}" class="form-group" method="POST">
+                    {% csrf_token %}
+                
+                    <input type="hidden" class="form-control" name="pack_id" value = "{{pack.id}}">
+                    <input type="text" class="form-control" name = "traxid" placeholder="Enter Transition ID" required>
+                </div>
+                <div class="card-footer">
+
+                    <input type="submit" class="btn btn-success w-100" value="Take Pack">
+
+                </form>
+                
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</div>
+{% endblock content %}
