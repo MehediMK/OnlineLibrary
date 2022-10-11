@@ -20,6 +20,6 @@
   - `python manage.py makemigrations` "for migration"
   - `python manage.py runserver host:port` "for starting dev. server"
   - `python manage.py startapp app_name` "for new app"
-  - `python manage.py createsuperuser` "for create superuser"
+  - `python manage.py createsuperuser` "For create superuser"
 
 
