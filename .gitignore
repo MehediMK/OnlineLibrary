@@ -11,8 +11,8 @@ static/*
 # virtual environment
 venv
 .venv
-
 env
 .env
 
+#database
 db.sqlite3
