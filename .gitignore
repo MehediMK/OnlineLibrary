@@ -1,5 +1,7 @@
 __pycache__
 migrations
+media/
+
 
 # virtual environment
 venv
