@@ -1,0 +1,12 @@
+__pycache__
+migrations
+
+# virtual environment
+venv
+env
+.env
+.venv
+
+db.sqlite3
+media
+statiticfiles
