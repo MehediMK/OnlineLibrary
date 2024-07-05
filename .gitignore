@@ -1,8 +1,7 @@
 __pycache__
 migrations
 media/
-statiticfiles
-static/admin/
+static/
 
 # virtual environment
 venv
