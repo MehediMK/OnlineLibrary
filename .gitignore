@@ -1,14 +1,18 @@
 __pycache__
 migrations
-media/
-static/
+
+
+media/*
+!media/.gitkeep
+
+static/*
+!static/.gitkeep
 
 # virtual environment
 venv
-env
-.env
 .venv
 
+env
+.env
+
 db.sqlite3
-media
-statiticfiles
